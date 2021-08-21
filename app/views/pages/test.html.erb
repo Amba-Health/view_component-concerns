@@ -1,0 +1,21 @@
+<h1>Hello test page!</h1>
+
+<%= render HostComponent.new(root_tag_name: 'p', root_tag_attributes: {data: {controller: 'hello'}}) do |component| %>
+  <% component.area(root_tag_name: 'h2') do |c| %>
+    <%= component.bem_block('hello') %>
+  <% end %>
+<% end %>
+
+<%
+  data = 5.times.map do |index|
+    {
+      name: Faker::Name.name,
+      tea: Faker::Tea.variety
+    }
+  end
+%>
+<h2>Table</h2>
+<%= render DataTableComponent.new(data: data) do |table| %>
+  <% pp "Table block" %>
+  <% table.column :name %>
+<% end %>

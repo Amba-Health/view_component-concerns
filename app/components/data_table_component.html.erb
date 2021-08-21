@@ -1,0 +1,21 @@
+<table>
+  <thead>
+    <% columns.each do |column| %>
+      <% pp "Rendering heading" %>
+      <%= column %>
+    <% end %>
+  </thead>
+  <tbody>
+    <% data.each do |datum| %>
+      <% columns.each do |column| %>
+        <% column.as = :cell %>
+        <% column.data = datum %>
+        <%# Need to clear the Slots cache for re-using the column %>
+        <% column.instance_variable_defined?(:@content) && column.remove_instance_variable(:@content) %>
+        <% column.cell.instance_variable_defined?(:@content) && column.cell.remove_instance_variable(:@content) %>
+        <%= column.data.inspect %>
+        <%= column %>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>
