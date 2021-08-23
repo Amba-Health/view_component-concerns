@@ -235,6 +235,18 @@ May rely on a `stimulus_attributes` helper that more generally helps create attr
 stimulus_attributes('dialog ', {target: ???, value: ???, action: ???})
 ```
 
+###  Components rendering specific models
+
+Some component's role is to render data coming from a model.
+This could be standardized through a `model` option for the component,
+with the ability to:
+
+- set it after initialization
+- have it modify the identifiers:
+  - append the `dom_id` of the model to the component's `dom_id`
+  - append the `dom_class` of the model to the component's `dom_class`
+  - ? pass the model ID (or data) to a specific Stimulus or data attribute for the Stimulus controller
+
 ### Slots
 
 To be expanded, but on the top of my head:
@@ -261,3 +273,16 @@ To be expanded, but on the top of my head:
 ```
 
 - reusable slots, either through lifting of current caching mechanisms within `SlotV2`/`ViewComponent::Base` or another way to collect slot parameters.
+
+### Wrapping
+
+Pushing the idea of Wrapped components from `view_component-contrib`, a `WithWrapper` concern would provide:
+
+- a `wrapper_tag_name` option to set the tag name for the wrapper
+- a `wrapper_attributes` option to set attributes for the wrapper
+- a `wrapper_component` option to set a component
+- a `wrapped` boolean option to tell whether the component should automatically render wrapped or not
+- a `wrapper` `attr_reader` for getting the instance of the wrapper for after initialization configuration
+- a `render_wrapper` method to let an outside component render the wrapper
+
+By the looks of it, the `wrapper` is kind of a flexible slot so it may be the way to go.
