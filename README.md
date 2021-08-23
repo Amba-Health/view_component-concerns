@@ -60,9 +60,11 @@ Components concerns
 
 The role of the component's constructor is usually only to gather data. There's very little incentive to do anything clever with it until the component actually gets rendered or used to avoid unnecessary computations if the component doesn't get used.
 
+An idea taken from <https://github.com/palkan/view_component-contrib#hanging-initialize-out-to-dry>
+
 > **TODO**: Investigate 3 things:
 >
-> 1. Gathering rest params and options
+> 1. Gathering rest params and options (🤞 this gets merged <https://github.com/dry-rb/dry-initializer/pull/89>, but there'll likely be a way to create something else)
 > 2. Providing aliases for options
 > 3. Providing shorthands params as default for option values
 
@@ -199,7 +201,7 @@ end
 
 ###  Identifiers
 
-Help provide component specific identifiers
+Help provide component specific identifiers, that can be used for IDs, CSS classes or hooking Stimulus controllers, in the spirit of <https://github.com/palkan/view_component-contrib#using-with-stimulusjs>
 
 #### `indentifier` and `instance_identifier`
 
