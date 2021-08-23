@@ -1,6 +1,8 @@
 View component concerns
 ===
 
+> **Implementation of a few of those has been started (see `app/components/concerns`), but a lot more needs doing**
+
 Support helpers
 ---
 
