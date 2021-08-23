@@ -288,3 +288,31 @@ Pushing the idea of Wrapped components from `view_component-contrib`, a `WithWra
 - a `render_wrapper` method to let an outside component render the wrapper
 
 By the looks of it, the `wrapper` is kind of a flexible slot so it may be the way to go.
+
+### Delegation
+
+Provide a way to create a component that delegates most of its behaviour to another one. This is useful for creating specialised behaviours of low level components, pre-filling some slots in a component:
+
+```rb
+class SpecialComponent < ViewComponent::Base
+  include WithDelegate
+  
+  delegate_class BaseComponent
+
+  def base_component_slot_name(*args, **args, &block)
+    # Intercept slot calls to parent component
+  end
+end
+```
+
+The `WithDelegate` concern provides:
+
+- a `delegate` method to lazily instanciate the delegate with the provided attributes, which will allow its rendering
+- a `delegate_attributes` to pass the appropriate attributes to the delegate when instanciated (by default, all attributes)
+- a `method_missing` implementation passing any calls to the delegate
+
+```erb
+<%= render delegate do |component| %>
+  <%# Fill whichever slots need filling %>
+<% end %>
+```
