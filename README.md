@@ -201,6 +201,50 @@ class SingleElementComponent < ViewComponent::Base
 end
 ```
 
+### Managing attributes
+
+There are a few places where attributes can be passed to a component:
+
+1. Outside the component, at instanciation: when the component is instanciated pass attributes to it
+  ```erb
+  <%= render MyComponent.new(class: 'some class') %>
+  ```
+2. Outside the component, within content: helps use the component's API to build attributes values. IDs are a good candidate for example
+   ```erb
+   <%= render MyComponent.new do |component| %>
+    <% component.attributes(class: component.dom_class('--modifier')) %>
+   <% end %>
+   ```
+3. Inside the component, when rendering the `root_tag`: This helps compute attributes based on the components's options
+  ```rb
+  def root_tag(&block)
+    tag.send(root_tag_name, root_tag_attributes, &block)
+  end
+
+  def root_tag_attributes
+    {class: 'some-class'}
+  end
+  ```
+
+  This can be divided in different methods, for ex:
+  ```
+  def collapsible_attributes
+    {'aria-expanded': true}
+  end
+  def root_tag_attributes
+    helpers.merge_attributes({class: 'some-class'},collapsible_attributes)
+  end
+  ```
+
+4. Inside the component, when rendering the root_tag, allowing to keep related attributes (class names, IDs and `for`/`aria-XXX`/...) in the same file
+  ```erb
+  <%= root_tag(class: 'some-class') do %>
+    <h2 class="my-component__heading"></h2>
+  <% end %>
+  ```
+
+A sensible order for merging would be: Content time attributes, instanciation attributes, template/`call` attributes, `root_tag_attributes`.
+
 ###  Identifiers
 
 Help provide component specific identifiers, that can be used for IDs, CSS classes or hooking Stimulus controllers, in the spirit of <https://github.com/palkan/view_component-contrib#using-with-stimulusjs>
