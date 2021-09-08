@@ -1,5 +1,8 @@
 class WithFlexibleSlots::FlexibleSlotRender
   extend Dry::Initializer
   
-  include Base, WithDefaultsFromOwner, WithDefaultsFromConfiguration
+  include Base
+  include WithDefaultsFromOwner
+  include WithConfigurationFromOwner
+  include WithDefaultsFromConfiguration
 end
