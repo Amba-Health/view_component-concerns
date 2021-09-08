@@ -11,6 +11,14 @@ module WithFlexibleSlots
         slot.call(self, *args, **options, &block)
       end
     end
+    
+    def flexibly_renders_one(slot_name, *args, **options)
+      renders_one slot_name, flexible_slot(slot_name, *args, **options)
+    end
+
+    def flexibly_renders_many(slot_name, *args, **options)
+      renders_many slot_name, flexible_slot(slot_name, *args, **options)
+    end
   end
 end
   

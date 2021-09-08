@@ -3,7 +3,7 @@
 class FlexibleComponent < ViewComponent::Base
   include WithFlexibleSlots
 
-  renders_many :slots, flexible_slot(:slots, tag: :h1)
+  flexibly_renders_many :slots, tag: :h1
 
   def slot_slot_options
     {
