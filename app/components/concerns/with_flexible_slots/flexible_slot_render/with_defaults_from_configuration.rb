@@ -3,7 +3,7 @@ module WithFlexibleSlots::FlexibleSlotRender::WithDefaultsFromConfiguration
 
   included do 
     option :configuration
-    delegate :component, :tag, :options, to: :configuration, prefix: :default
+    delegate :component, :tag, :options, :params, to: :configuration, prefix: :default
     delegate :merge_attributes, to: :helpers
 
     def tag
@@ -12,6 +12,10 @@ module WithFlexibleSlots::FlexibleSlotRender::WithDefaultsFromConfiguration
     
     def component
       super || default_component
+    end
+
+    def params
+      super || default_params
     end
 
     def options

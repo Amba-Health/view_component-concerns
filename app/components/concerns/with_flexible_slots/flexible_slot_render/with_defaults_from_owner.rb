@@ -14,6 +14,10 @@ module WithFlexibleSlots::FlexibleSlotRender::WithDefaultsFromOwner
     super || owner_attribute_for(slot_name, :component)
   end
 
+  def params
+    super || owner_attribute_for(slot_name, :params)
+  end
+
   def options
     merge_attributes(owner_attribute_for(slot_name, :options), super)
   end

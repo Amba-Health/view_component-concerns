@@ -1,7 +1,7 @@
 module WithFlexibleSlots::FlexibleSlotRender::Base
   extend ActiveSupport::Concern
   included do
-    rest_params :args
+    rest_params :params
     option :slot_owner
     option :component, optional: true
     option :tag, optional: true
@@ -29,7 +29,7 @@ module WithFlexibleSlots::FlexibleSlotRender::Base
     if component.present?
       # For components the block will be provided 
       # by the ViewComponent::SlotV2 when rendering
-      component.new(*args, tag: tag, content: content, **options)
+      component.new(*params, tag: tag, content: content, **options)
     end
   end
 
