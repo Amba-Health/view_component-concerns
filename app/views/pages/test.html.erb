@@ -6,6 +6,18 @@
   <% end %>
 <% end %>
 
+<%= render FlexibleComponent.new do |c| %>
+  <%= c.slot {"Content from block"} %>
+  <%= c.slot content: "Content as option" %>
+  <%= c.slot tag: :p, content: "Content of tag", style: 'color: red;' %>
+  <%= c.slot tag: :p do %>
+    Content of tag from block
+  <% end %>
+  <%= c.slot component: TagComponent, style: 'color: red;', tag_name: :h2 do %>
+    Content for component
+  <% end %>
+<% end %>
+
 <%
   data = 5.times.map do |index|
     {
