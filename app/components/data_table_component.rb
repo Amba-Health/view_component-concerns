@@ -39,12 +39,10 @@ class DataTableComponent < ViewComponent::Base
     end
 
     def value
-      pp "Calling value", data, attribute
       data[attribute]
     end
 
     def call
-      pp "Calling column"
       send(as)
     end
 
@@ -55,7 +53,6 @@ class DataTableComponent < ViewComponent::Base
       delegate :value, to: :parent
       
       def content
-        pp "Cell content", value
         value
       end
     end

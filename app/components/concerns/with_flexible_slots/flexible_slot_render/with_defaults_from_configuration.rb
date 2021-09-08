@@ -1,9 +1,9 @@
-module WithFlexibleSlots::FlexibleSlotRender::WithDefaultsFromSlot
+module WithFlexibleSlots::FlexibleSlotRender::WithDefaultsFromConfiguration
   extend ActiveSupport::Concern
 
   included do 
-    option :slot
-    delegate :component, :tag, :options, to: :slot, prefix: :default
+    option :configuration
+    delegate :component, :tag, :options, to: :configuration, prefix: :default
     delegate :merge_attributes, to: :helpers
 
     def tag

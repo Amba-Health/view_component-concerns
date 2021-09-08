@@ -3,9 +3,9 @@
 class FlexibleComponent < ViewComponent::Base
   include WithFlexibleSlots
 
-  flexibly_renders_many :slots, tag: :h1
+  flexibly_renders_many :flexible_slots, tag: :h1
 
-  def slot_slot_options
+  def flexible_slot_slot_options
     {
       style: 'background: lime'
     }

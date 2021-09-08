@@ -1,7 +1,7 @@
 module WithFlexibleSlots::FlexibleSlotRender::WithDefaultsFromOwner
   extend ActiveSupport::Concern
 
-  delegate :slot_name, to: :slot
+  delegate :slot_name, to: :configuration
   delegate :merge_attributes, to: :helpers
 
   # No caching in case owner gets rendered multiple times
