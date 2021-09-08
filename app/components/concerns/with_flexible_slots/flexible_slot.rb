@@ -1,5 +1,6 @@
 class WithFlexibleSlots::FlexibleSlot
   extend Dry::Initializer
+  option :slot_name
   option :component, optional: true
   option :tag, optional: true
   option :render_class, optional: true

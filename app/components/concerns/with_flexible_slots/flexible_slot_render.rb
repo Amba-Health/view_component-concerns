@@ -8,6 +8,7 @@ class WithFlexibleSlots::FlexibleSlotRender
   option :content, optional: true
   rest_options :options
 
+  include WithDefaultsFromOwner
   include WithDefaultsFromSlot
   
   delegate :helpers, :capture, to: :slot_owner

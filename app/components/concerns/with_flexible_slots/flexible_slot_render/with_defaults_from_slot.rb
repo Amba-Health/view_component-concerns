@@ -7,15 +7,15 @@ module WithFlexibleSlots::FlexibleSlotRender::WithDefaultsFromSlot
     delegate :merge_attributes, to: :helpers
 
     def tag
-      @tag_value ||= super || default_tag
+      super || default_tag
     end
     
     def component
-      @component_value ||= super || default_component
+      super || default_component
     end
 
     def options
-      @options_value ||= merge_attributes(super, default_options)
+      merge_attributes(default_options, super)
     end
   end
 end
