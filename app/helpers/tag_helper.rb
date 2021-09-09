@@ -15,10 +15,12 @@ module TagHelper
     # to allow merging maps with different kinds of keys
     # we need to use a common type, symbol, picked arbitrarily
     result = attributes.deep_symbolize_keys
-    extra_attributes_list = extra_attributes_list.map(&:deep_symbolize_keys)
-
+  
     return result if extra_attributes_list.empty?
-    extra_attributes_list = extra_attributes_list.reject{|item| item.blank?}
+    extra_attributes_list = extra_attributes_list
+      .flatten # Handle nested arrays that may have been used for collecting series of attributes
+      .reject{|item| item.blank?} # No need to process blank values
+      .map(&:deep_symbolize_keys) # Ensure we don't duplicate keys
     
     extra_attributes_list.each_with_index do |extra_attributes, index|
       # deep_merge the attributes so we handle the data Hash properly
