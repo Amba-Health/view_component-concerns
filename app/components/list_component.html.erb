@@ -1,0 +1,5 @@
+<ul>
+  <% items.each_with_index do |item, index| %>
+    <%= item.render_within(self, id: index, root_tag_content: index) %>
+  <% end %>
+</ul>

@@ -31,3 +31,9 @@
   <% pp "Table block" %>
   <% table.column :name %>
 <% end %>
+
+<h2>Repeatable</h2>
+<%= render ListComponent.new do |list| %>
+  <% list.item{'Content from block'} %>
+  <% list.item(class: 'italic') %>
+<% end %>
