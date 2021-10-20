@@ -309,6 +309,14 @@ To be expanded, but on the top of my head:
 `SINGULAR_SLOT_NAME_slot_options`,
 `SINGULAR_SLOT_NAME_slot_block`
 
+```rb
+class ParentComponent < ViewComponent::Base
+  include WithFlexibleSlot
+
+  flexibly_renders_many :slots, component: SomeComponent
+end
+```
+
 ```erb
 <%= render ParentComponent do |component| %>
   <%# Just provides the "content" %>
@@ -316,12 +324,12 @@ To be expanded, but on the top of my head:
   <%# Pretty similar as before %>
   <% component.slot {"Content"} %>
   <%# Renders a `TagComponent` %>
-  <% component.slot :ul, class: '' %>
+  <% component.slot tag: :ul, class: '' %>
   <%# Overrides component defined for the slot and passes it the given attributes %>
-  <% component.slot OtherComponent, attributes %>
-  <%# Pass a fully configured component %>
+  <% component.slot component: OtherComponent, **attributes %>
+  <%# TODO: Pass a fully configured component %>
   <%# This'll likely require the component to respond to a method for setting extra options when used as a slot %>
-  <% component.slot OtherComponent.new(attributes) %>
+  <%# component.slot OtherComponent.new(attributes) %>
 <% end %>
 ```
 

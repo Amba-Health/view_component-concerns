@@ -27,12 +27,12 @@ module WithFlexibleSlots::FlexibleSlotRender::WithConfigurationFromOwner
     merge_attributes(settings_options, super)
   end
 
-  def with_configuration_from_owner(&block)
+  def with_configuration_from_owner
     # Read the configuration only once and cache it for the time of the render
     # in case the owner does some heavy computations there
     @configuration_from_owner = ConfigurationFromOwner.new(owner_attribute_for_slot(:settings))
     begin
-      block.call
+      yield
     ensure
       # But clear it after render in case the slot gets rendered multiple times
       # 
