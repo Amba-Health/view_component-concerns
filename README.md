@@ -70,25 +70,25 @@ An idea taken from <https://github.com/palkan/view_component-contrib#hanging-ini
 > 2. Providing aliases for options
 > 3. Providing shorthands params as default for option values
 
-### Root tag
+### Root
 
-A good amount of components will render a single tag (with various kinds of content). It makes sense to provide some vocabulary to make this behaviour explicit and extendable.
+A good amount of components will render a single tag (with various kinds of content) or wrap a single component as a root. It makes sense to provide some vocabulary to make this behaviour explicit and extendable.
 
-#### `WithRootTag`
+#### `WithRoot`
 
-A `root_tag` method renders that root tag wrapping the component's `content` or a custom block, with the required `root_tag_name` and `root_tag_attributes`. It can be invoked:
+A `root` method renders that root tag wrapping the component's `content` or a custom block, with the required `root_tag_name` and `root_attributes`. It can be invoked:
 
 - by inline components
 
   ```rb
   def call
-    root_tag('Some content for the root tag')
+    root('Some content for the root tag')
   end
 
   # Or
 
   def call
-    root_tag do
+    root do
       "Some content for the root tag"
     end
   end
@@ -97,7 +97,7 @@ A `root_tag` method renders that root tag wrapping the component's `content` or 
 - and templated ones
 
   ```erb
-    <%= root_tag do %>
+    <%= root do %>
       Some content for the root_tag
     <% end %>
   ```
@@ -110,7 +110,7 @@ can be overriden when calling `root_tag`
   Allows the component to enforce semantics at render 
   and set a related classes in the same place
 %>
-<%= root_tag(:ul, class:'position-relative') %>
+<%= root(:ul, class:'position-relative') %>
   <% children.each do |child| %>
     <li class="position-absolute">
       <%= child %>
@@ -119,31 +119,31 @@ can be overriden when calling `root_tag`
 <% end %>
 ```
 
-> **Important** `WithRootTag` only provides the `root_tag`, `root_tag_attributes` and `root_tag_name` methods. It's up to the component to call them as necessary.
+> **Important** `WithRootTag` only provides the `root`, `root_attributes` and `root_tag_name` methods. It's up to the component to call them as necessary.
 >
 > It's likely you'll want the root_tag to wrap the render, however because view_component doesn't accept a component with both `call` and a template, the concern can not automagically register a `call` method.
 
-### TODO?: `WithRootTagOptions`
+### TODO?: `WithRootOptions`
 
-`root_tag_name` and `root_tag_attributes` are defined as `attr_reader`
+`root_tag_name` and `root_attributes` are defined as `attr_reader`
 Those should be providable at initialization
 as `dry-initializer` options so that components can be initialized as such:
 
 ```rb
-MyComponent.new(root_tag_name: :header, root_tag_attributes: {}, class: 'test')
+MyComponent.new(root_tag_name: :header, root_attributes: {}, class: 'test')
 ```
 
-An alias of `root_tag_name` to `tag_name` would likely be handy, just as `root_tag_attributes` to `tag_attributes`.
+An alias of `root_tag_name` to `tag_name` would likely be handy, just as `root_attributes`.
 
 Shorthands params to allow
-`MyComponent.new(:header, :content)` would likely be welcome too, but probably best provided as a code sample to copy rather than baked in to let more complex components relying on `root_tag` provide more relevant shorthands to their use.
+`MyComponent.new(:header, :content)` would likely be welcome too, but probably best provided as a code sample to copy rather than baked in to let more complex components relying on `root` provide more relevant shorthands to their use.
 
-Also, is there a way to have some DSL at class level for setting a default `root_tag_name` and `root_tag_attributes`
+Also, is there a way to have some DSL at class level for setting a default `root_tag_name` and `root_attributes`
 
 ```rb
 class MyComponent < ViewComponent::Base
   root_tag_name :ul
-  root_tag_attributes: {
+  root_attributes: {
     class: 'some-class'
   }
 
@@ -159,14 +159,14 @@ end
 
 ### `WithRenderedRootTag`
 
-Defines a `call` method that renders the `root_tag`.
+Defines a `call` method that renders the `root`.
 
 This allows to define a `TagComponent` as such:
 
 ```rb
 class TagComponent < ViewComponent::Base
-  include WithRootTag
-  include WithRenderedRootTag
+  include WithRoot
+  include WithRenderedRoot
 end
 ```
 
@@ -184,9 +184,9 @@ render UserInfoComponent.new do |user_info|
 end
 ```
 
-#### TODO: `WithWrappingRootTag`
+#### TODO: `WithWrappingRoot`
 
-For components rendering a single root element, we can offer to wrap the render within the `root_tag` so that the component can focus on rendering the content of that root tag.
+For components rendering a single root element, we can offer to wrap the render within the `root` so that the component can focus on rendering the content of that root tag.
 
 ```rb
 class SingleElementComponent < ViewComponent::Base
@@ -222,11 +222,11 @@ There are a few places where attributes can be passed to a component:
 3. Inside the component, when rendering the `root_tag`: This helps compute attributes based on the components's options
 
   ```rb
-  def root_tag(&block)
+  def root(&block)
     tag.send(root_tag_name, root_tag_attributes, &block)
   end
 
-  def root_tag_attributes
+  def root_attributes
     {class: 'some-class'}
   end
   ```
@@ -237,7 +237,7 @@ There are a few places where attributes can be passed to a component:
   def collapsible_attributes
     {'aria-expanded': true}
   end
-  def root_tag_attributes
+  def root_attributes
     helpers.merge_attributes({class: 'some-class'},collapsible_attributes)
   end
   ```
@@ -245,12 +245,12 @@ There are a few places where attributes can be passed to a component:
 4. Inside the component, when rendering the root_tag, allowing to keep related attributes (class names, IDs and `for`/`aria-XXX`/...) in the same file
 
   ```erb
-  <%= root_tag(class: 'some-class') do %>
+  <%= root(class: 'my-component') do %>
     <h2 class="my-component__heading"></h2>
   <% end %>
   ```
 
-A sensible order for merging would be: Content time attributes, instanciation attributes, template/`call` attributes, `root_tag_attributes`.
+A sensible order for merging would be (left most winning): Content time attributes, instanciation attributes, template/`call` attributes, `root_attributes`.
 
 ###  Identifiers
 
@@ -291,13 +291,13 @@ stimulus_attributes('dialog ', {target: ???, value: ???, action: ???})
 ###  Components rendering specific models
 
 Some component's role is to render data coming from a model.
-This could be standardized through a `model` option for the component,
+This could be standardized through an `object` attribute (with accessors) for the component,
 with the ability to:
 
 - set it after initialization
 - have it modify the identifiers:
-  - append the `dom_id` of the model to the component's `dom_id`
-  - append the `dom_class` of the model to the component's `dom_class`
+  - append the `dom_id` of the model to the component's `dom_id` (possibly with an escape hatch)
+  - append the `dom_class` of the model to the component's `dom_class` (possibly with an escape hatch)
   - ? pass the model ID (or data) to a specific Stimulus or data attribute for the Stimulus controller
 
 ### Slots
@@ -392,7 +392,7 @@ The `WithDelegate` concern provides:
 
 - a `delegate` method to lazily instanciate the delegate with the provided attributes, which will allow its rendering
 - a `delegate_attributes` to pass the appropriate attributes to the delegate when instanciated (by default, all attributes)
-- a `method_missing` implementation passing any calls to the delegate
+- ~a `method_missing` implementation passing any calls to the delegate~ (Rails has `delegate_missing_to`)
 
 ```erb
 <%= render delegate do |component| %>
