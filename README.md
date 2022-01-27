@@ -58,17 +58,55 @@ TODO: Find another mechanism to provide a `get`/`set`/`has` feature for storing 
 Components concerns
 ---
 
-###  Dry initializer
-
-The role of the component's constructor is usually only to gather data. There's very little incentive to do anything clever with it until the component actually gets rendered or used to avoid unnecessary computations if the component doesn't get used.
+###  Declarative attributes
 
 An idea taken from <https://github.com/palkan/view_component-contrib#hanging-initialize-out-to-dry>
 
-> **TODO**: Investigate 3 things:
->
-> 1. Gathering rest params and options (🤞 this gets merged <https://github.com/dry-rb/dry-initializer/pull/89>, but there'll likely be a way to create something else)
-> 2. Providing aliases for options
-> 3. Providing shorthands params as default for option values
+Rails provides us with some stuff (thanks James & Nic) out of the box through `ActiveModel::Model` and `ActiveModel::Attributes`. With a little monkey patching, we can gather the unknown attributes and that's pretty close to having declarative attributes for components:
+
+```rb
+module WithUnknownAttributes
+    
+  def assign_unknown_attribute(attribute_name,value)
+      unknown_attributes[attribute_name.to_sym] = value
+  end
+
+  def unknown_attributes
+      @unknown_attributes ||= {}
+  end
+
+  private
+
+  def _assign_attribute(k, v)
+    setter = :"#{k}="
+    if respond_to?(setter)
+        public_send(setter, v)
+    else
+        assign_unknown_attribute(k,v)
+    end
+  end
+    
+end
+```
+
+Which we can then include and use as so:
+
+```rb
+class UnknownAttributesComponent < ViewComponent::Base
+  include ActiveModel::Model
+  include ActiveModel::Attributes
+  include WithUnknownAttributes
+
+  attribute :str, default: "Hello"
+  attribute :obj, default: {}
+end
+```
+
+See `UnknownAttributesComponent`
+
+Only caveat is that the defaults are not computed at each initialisation (like for `dry-initializer`). For that use case, we can always declare our own attribute accessor, I guess.
+
+`dry-initializer` unfortunately is still pending merge of [that PR for gathering rest attributes](https://github.com/dry-rb/dry-initializer/pull/89). Once that's done it may be worth a review to get default values computed at each initialization (or even better, at first read, no sense computing a default until accessed)
 
 ### Root
 

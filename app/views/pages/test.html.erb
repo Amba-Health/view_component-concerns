@@ -37,3 +37,9 @@
   <% list.item{'Content from block'} %>
   <% list.item(class: 'italic') %>
 <% end %>
+
+
+<h2>Automatic attributes</h2>
+
+<%= render UnknownAttributesComponent.new(class: 'italic') %>
+<%= render ExtendedWithAttributesComponent.new(class: 'bold') %>
